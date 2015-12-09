@@ -283,9 +283,9 @@ object KVBench {
     benchSparkRDD(kvRDDMem)
     kvRDDMem.unpersist(true)
 
-    val kvRDDSuccinct = SuccinctKVRDD[Long](ctx, succinctDataPath, StorageLevel.MEMORY_ONLY).cache()
-    println("Number of entries = " + kvRDDSuccinct.count())
+    // val kvRDDSuccinct = SuccinctKVRDD[Long](ctx, succinctDataPath, StorageLevel.MEMORY_ONLY).cache()
+    // println("Number of entries = " + kvRDDSuccinct.count())
 
-    benchSuccinctRDD(kvRDDSuccinct)
+    // benchSuccinctRDD(kvRDDSuccinct)
   }
 }
