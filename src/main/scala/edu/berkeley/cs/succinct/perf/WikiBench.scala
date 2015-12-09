@@ -23,7 +23,7 @@ object WikiBench {
 
   // Constants
   val WARMUP_COUNT: Int = 20
-  val MEASURE_COUNT: Int = 100
+  val MEASURE_COUNT: Int = 1706
 
   // Metadata for executing Spark RDD queries
   var partitionOffsets: Seq[Long] = _
