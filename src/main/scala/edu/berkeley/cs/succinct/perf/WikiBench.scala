@@ -365,8 +365,8 @@ object WikiBench {
     offsetsMeasure = sampleSeq(offsets, MEASURE_COUNT)
 
     // Benchmark DISK_ONLY
-    benchSparkRDD(wikiDataDisk)
-    wikiDataDisk.unpersist()
+    // benchSparkRDD(wikiDataDisk)
+    // wikiDataDisk.unpersist()
 
     val wikiDataMem = ctx.textFile(dataPath, partitions).map(_.getBytes).repartition(partitions).persist(StorageLevel.MEMORY_ONLY_SER)
 
