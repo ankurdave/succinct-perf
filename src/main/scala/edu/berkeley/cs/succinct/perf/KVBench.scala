@@ -252,7 +252,7 @@ object KVBench {
 
     words = Source.fromFile(queryPath).getLines().toArray
 
-    val sparkConf = new SparkConf().setAppName("KVBench")
+    val sparkConf = new SparkConf().setAppName("KVBench").set("spark.rdd.compress", "true")
     val ctx = new SparkContext(sparkConf)
 
     val kvRDD = ctx.textFile(dataPath)
