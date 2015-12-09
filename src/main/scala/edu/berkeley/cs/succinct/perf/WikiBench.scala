@@ -172,24 +172,24 @@ object WikiBench {
       case _ => "undf"
     }
 
-    println(s"Benchmarking Spark RDD $storageLevel count recordIds...")
+    // println(s"Benchmarking Spark RDD $storageLevel count recordIds...")
 
-    // Warmup
-    wordsWarmup.foreach(w => {
-      val count = countRDD(rdd, w)
-      println(s"$w\t$count")
-    })
+    // // Warmup
+    // wordsWarmup.foreach(w => {
+    //   val count = countRDD(rdd, w)
+    //   println(s"$w\t$count")
+    // })
 
-    // Measure
-    val outCount = new FileWriter(outPath + "/spark-" + storageLevel + "-count")
-    wordsMeasure.foreach(w => {
-      val startTime = System.currentTimeMillis()
-      val count = countRDD(rdd, w)
-      val endTime = System.currentTimeMillis()
-      val totTime = endTime - startTime
-      outCount.write(s"$w\t$count\t$totTime\n")
-    })
-    outCount.close()
+    // // Measure
+    // val outCount = new FileWriter(outPath + "/spark-" + storageLevel + "-count")
+    // wordsMeasure.foreach(w => {
+    //   val startTime = System.currentTimeMillis()
+    //   val count = countRDD(rdd, w)
+    //   val endTime = System.currentTimeMillis()
+    //   val totTime = endTime - startTime
+    //   outCount.write(s"$w\t$count\t$totTime\n")
+    // })
+    // outCount.close()
 
     println(s"Benchmarking Spark RDD $storageLevel search recordIds...")
 
@@ -210,24 +210,24 @@ object WikiBench {
     })
     outSearch.close()
 
-    println(s"Benchmarking Spark RDD $storageLevel random access...")
+    // println(s"Benchmarking Spark RDD $storageLevel random access...")
 
-    // Warmup
-    offsetsWarmup.foreach(o => {
-      val length = extractRDD(rdd, partitionOffsets, partitionSizes, o, extractLen).length
-      println(s"$o\t$length")
-    })
+    // // Warmup
+    // offsetsWarmup.foreach(o => {
+    //   val length = extractRDD(rdd, partitionOffsets, partitionSizes, o, extractLen).length
+    //   println(s"$o\t$length")
+    // })
 
-    // Measure
-    val outExtract = new FileWriter(outPath + "/spark-" + storageLevel + "-extract")
-    offsetsMeasure.foreach(o => {
-      val startTime = System.currentTimeMillis()
-      val length = extractRDD(rdd, partitionOffsets, partitionSizes, o, extractLen).length
-      val endTime = System.currentTimeMillis()
-      val totTime = endTime - startTime
-      outExtract.write(s"$o\t$length\t$totTime\n")
-    })
-    outExtract.close()
+    // // Measure
+    // val outExtract = new FileWriter(outPath + "/spark-" + storageLevel + "-extract")
+    // offsetsMeasure.foreach(o => {
+    //   val startTime = System.currentTimeMillis()
+    //   val length = extractRDD(rdd, partitionOffsets, partitionSizes, o, extractLen).length
+    //   val endTime = System.currentTimeMillis()
+    //   val totTime = endTime - startTime
+    //   outExtract.write(s"$o\t$length\t$totTime\n")
+    // })
+    // outExtract.close()
   }
 
   def benchSuccinctRDD(rdd: SuccinctRDD): Unit = {
@@ -339,7 +339,7 @@ object WikiBench {
     val queryPath = args(3)
     outPath = args(4)
 
-    val sparkConf = new SparkConf().setAppName("WikiBench")
+    val sparkConf = new SparkConf().setAppName("WikiBench").set("spark.rdd.compress", "true")
     val ctx = new SparkContext(sparkConf)
 
     words = Source.fromFile(queryPath).getLines().toSeq
@@ -368,7 +368,7 @@ object WikiBench {
     benchSparkRDD(wikiDataDisk)
     wikiDataDisk.unpersist()
 
-    val wikiDataMem = ctx.textFile(dataPath, partitions).map(_.getBytes).repartition(partitions).persist(StorageLevel.MEMORY_ONLY)
+    val wikiDataMem = ctx.textFile(dataPath, partitions).map(_.getBytes).repartition(partitions).persist(StorageLevel.MEMORY_ONLY_SER)
 
     // Ensure all partitions are in memory
     println("Number of lines = " + wikiDataMem.count())
@@ -377,14 +377,14 @@ object WikiBench {
     benchSparkRDD(wikiDataMem)
     wikiDataMem.unpersist()
 
-    val wikiSuccinctData = SuccinctRDD(ctx, succinctDataPath, StorageLevel.MEMORY_ONLY).persist()
+    // val wikiSuccinctData = SuccinctRDD(ctx, succinctDataPath, StorageLevel.MEMORY_ONLY).persist()
 
-    // Ensure all partitions are in memory
-    println("Number of lines = " + wikiSuccinctData.count())
+    // // Ensure all partitions are in memory
+    // println("Number of lines = " + wikiSuccinctData.count())
 
-    // Benchmark Succinct
-    benchSuccinctRDD(wikiSuccinctData)
-    wikiSuccinctData.unpersist()
+    // // Benchmark Succinct
+    // benchSuccinctRDD(wikiSuccinctData)
+    // wikiSuccinctData.unpersist()
 
   }
 
