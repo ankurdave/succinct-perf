@@ -26,3 +26,23 @@ results
 project/project
 project/target
 .history
+
+# Scala
+*.class
+*.log
+
+sbt/sbt-launch*.jar
+.idea/
+.idea_modules/
+.cache
+.history
+.lib/
+dist/*
+target/
+lib_managed/
+src_managed/
+project/boot/
+project/plugins/project/
+
+.scala_dependencies
+.worksheet
