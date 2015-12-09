@@ -79,41 +79,41 @@ object KVBench {
 
     println(s"Benchmarking Spark RDD $storageLevel get...")
 
-    // Warmup
-    keysWarmup.foreach(k => {
-      val length = get(rdd, k).length
-      println(s"$k\t$length")
-    })
+    // // Warmup
+    // keysWarmup.foreach(k => {
+    //   val length = get(rdd, k).length
+    //   println(s"$k\t$length")
+    // })
 
-    // Measure
-    val outGet = new FileWriter(outPath + "/spark-" + storageLevel + "-get")
-    keysMeasure.foreach(k => {
-      val startTime = System.currentTimeMillis()
-      val length = get(rdd, k).length
-      val endTime = System.currentTimeMillis()
-      val totTime = endTime - startTime
-      outGet.write(s"$k\t$length\t$totTime\n")
-    })
-    outGet.close()
+    // // Measure
+    // val outGet = new FileWriter(outPath + "/spark-" + storageLevel + "-get")
+    // keysMeasure.foreach(k => {
+    //   val startTime = System.currentTimeMillis()
+    //   val length = get(rdd, k).length
+    //   val endTime = System.currentTimeMillis()
+    //   val totTime = endTime - startTime
+    //   outGet.write(s"$k\t$length\t$totTime\n")
+    // })
+    // outGet.close()
 
-    println(s"Benchmarking Spark RDD $storageLevel access...")
+    // println(s"Benchmarking Spark RDD $storageLevel access...")
 
-    // Warmup
-    keysWarmup.foreach(k => {
-      val length = access(rdd, k).length
-      println(s"$k\t$length")
-    })
+    // // Warmup
+    // keysWarmup.foreach(k => {
+    //   val length = access(rdd, k).length
+    //   println(s"$k\t$length")
+    // })
 
-    // Measure
-    val outAccess = new FileWriter(outPath + "/spark-" + storageLevel + "-access")
-    keysMeasure.foreach(k => {
-      val startTime = System.currentTimeMillis()
-      val length = access(rdd, k).length
-      val endTime = System.currentTimeMillis()
-      val totTime = endTime - startTime
-      outAccess.write(s"$k\t$length\t$totTime\n")
-    })
-    outAccess.close()
+    // // Measure
+    // val outAccess = new FileWriter(outPath + "/spark-" + storageLevel + "-access")
+    // keysMeasure.foreach(k => {
+    //   val startTime = System.currentTimeMillis()
+    //   val length = access(rdd, k).length
+    //   val endTime = System.currentTimeMillis()
+    //   val totTime = endTime - startTime
+    //   outAccess.write(s"$k\t$length\t$totTime\n")
+    // })
+    // outAccess.close()
 
     println(s"Benchmarking Spark RDD $storageLevel search...")
 
