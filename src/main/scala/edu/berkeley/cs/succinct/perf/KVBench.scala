@@ -73,6 +73,7 @@ object KVBench {
     val storageLevel = rdd.getStorageLevel match {
       case StorageLevel.DISK_ONLY => "disk"
       case StorageLevel.MEMORY_ONLY => "mem"
+      case StorageLevel.MEMORY_ONLY_SER => "memser"
       case _ => "undf"
     }
 
@@ -138,6 +139,7 @@ object KVBench {
     val storageLevel = rdd.getStorageLevel match {
       case StorageLevel.DISK_ONLY => "disk"
       case StorageLevel.MEMORY_ONLY => "mem"
+      case StorageLevel.MEMORY_ONLY_SER => "memser"
       case _ => "undf"
     }
 
@@ -275,7 +277,7 @@ object KVBench {
     benchSparkRDD(kvRDDDisk)
     kvRDDDisk.unpersist(true)
 
-    val kvRDDMem = kvRDD.persist(StorageLevel.MEMORY_ONLY)
+    val kvRDDMem = kvRDD.persist(StorageLevel.MEMORY_ONLY_SER)
     println("Number of entries = " + kvRDDMem.count())
 
     benchSparkRDD(kvRDDMem)
