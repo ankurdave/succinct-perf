@@ -374,18 +374,22 @@ object WikiBench {
     // Ensure all partitions are in memory
     println("Number of lines = " + wikiDataMem.count())
 
+    wikiDataMem.saveAsTextFile("/wikiDataMem", classOf[org.apache.hadoop.io.compress.SnappyCodec])
+
     // Benchmark MEMORY_ONLY
-    benchSparkRDD(wikiDataMem)
+    // benchSparkRDD(wikiDataMem)
     wikiDataMem.unpersist()
 
-    // val wikiSuccinctData = SuccinctRDD(ctx, succinctDataPath, StorageLevel.MEMORY_ONLY).persist()
+    val wikiSuccinctData = SuccinctRDD(ctx, succinctDataPath, StorageLevel.MEMORY_ONLY).persist()
 
-    // // Ensure all partitions are in memory
-    // println("Number of lines = " + wikiSuccinctData.count())
+    // Ensure all partitions are in memory
+    println("Number of lines = " + wikiSuccinctData.count())
+
+    wikiSuccinctData.save("/wikiSuccinctData")
 
     // // Benchmark Succinct
     // benchSuccinctRDD(wikiSuccinctData)
-    // wikiSuccinctData.unpersist()
+    wikiSuccinctData.unpersist()
 
   }
 
