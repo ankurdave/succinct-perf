@@ -8,7 +8,7 @@ resolvers += "Spark Packages Repo" at "http://dl.bintray.com/spark-packages/mave
 
 libraryDependencies += "amplab" % "succinct" % "0.1.6"
 
-libraryDependencies += "org.apache.spark" %% "spark-sql" % "1.4.1"
+libraryDependencies += "org.apache.spark" %% "spark-sql" % "1.5.1"
 
 libraryDependencies += "commons-cli" % "commons-cli" % "1.3.1"
 
