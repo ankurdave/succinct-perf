@@ -173,43 +173,43 @@ object WikiBench {
       case _ => "undf"
     }
 
-    println(s"Benchmarking Spark RDD $storageLevel count recordIds...")
+    // println(s"Benchmarking Spark RDD $storageLevel count recordIds...")
 
-    // Warmup
-    wordsWarmup.foreach(w => {
-      val count = countRDD(rdd, w)
-      println(s"$w\t$count")
-    })
+    // // Warmup
+    // wordsWarmup.foreach(w => {
+    //   val count = countRDD(rdd, w)
+    //   println(s"$w\t$count")
+    // })
 
-    // Measure
-    val outCount = new FileWriter(outPath + "/spark-" + storageLevel + "-count")
-    wordsMeasure.foreach(w => {
-      val startTime = System.currentTimeMillis()
-      val count = countRDD(rdd, w)
-      val endTime = System.currentTimeMillis()
-      val totTime = endTime - startTime
-      outCount.write(s"$w\t$count\t$totTime\n")
-    })
-    outCount.close()
+    // // Measure
+    // val outCount = new FileWriter(outPath + "/spark-" + storageLevel + "-count")
+    // wordsMeasure.foreach(w => {
+    //   val startTime = System.currentTimeMillis()
+    //   val count = countRDD(rdd, w)
+    //   val endTime = System.currentTimeMillis()
+    //   val totTime = endTime - startTime
+    //   outCount.write(s"$w\t$count\t$totTime\n")
+    // })
+    // outCount.close()
 
-    println(s"Benchmarking Spark RDD $storageLevel search recordIds...")
+    // println(s"Benchmarking Spark RDD $storageLevel search recordIds...")
 
-    // Warmup
-    wordsWarmup.foreach(w => {
-      val count = searchRDD(rdd, partitionOffsets, w).count()
-      println(s"$w\t$count")
-    })
+    // // Warmup
+    // wordsWarmup.foreach(w => {
+    //   val count = searchRDD(rdd, partitionOffsets, w).count()
+    //   println(s"$w\t$count")
+    // })
 
-    // Measure
-    val outSearch = new FileWriter(outPath + "/spark-" + storageLevel + "-search")
-    wordsMeasure.foreach(w => {
-      val startTime = System.currentTimeMillis()
-      val count = searchRDD(rdd, partitionOffsets, w).count()
-      val endTime = System.currentTimeMillis()
-      val totTime = endTime - startTime
-      outSearch.write(s"$w\t$count\t$totTime\n")
-    })
-    outSearch.close()
+    // // Measure
+    // val outSearch = new FileWriter(outPath + "/spark-" + storageLevel + "-search")
+    // wordsMeasure.foreach(w => {
+    //   val startTime = System.currentTimeMillis()
+    //   val count = searchRDD(rdd, partitionOffsets, w).count()
+    //   val endTime = System.currentTimeMillis()
+    //   val totTime = endTime - startTime
+    //   outSearch.write(s"$w\t$count\t$totTime\n")
+    // })
+    // outSearch.close()
 
     println(s"Benchmarking Spark RDD $storageLevel random access...")
 
@@ -366,18 +366,18 @@ object WikiBench {
     offsetsMeasure = sampleSeq(offsets, MEASURE_COUNT)
 
     // Benchmark DISK_ONLY
-    // benchSparkRDD(wikiDataDisk)
+    benchSparkRDD(wikiDataDisk)
     // wikiDataDisk.unpersist()
 
-    val wikiDataMem = ctx.textFile(dataPath, partitions).map(_.getBytes).repartition(partitions).persist(StorageLevel.MEMORY_ONLY_SER)
+    val wikiDataMem = ctx.textFile(dataPath, partitions).map(_.getBytes).repartition(partitions).persist(StorageLevel.MEMORY_ONLY)
 
     // Ensure all partitions are in memory
     println("Number of lines = " + wikiDataMem.count())
 
-    wikiDataMem.saveAsTextFile("/wikiDataMem", classOf[org.apache.hadoop.io.compress.SnappyCodec])
+    // wikiDataMem.saveAsTextFile("/wikiDataMem", classOf[org.apache.hadoop.io.compress.SnappyCodec])
 
     // Benchmark MEMORY_ONLY
-    // benchSparkRDD(wikiDataMem)
+    benchSparkRDD(wikiDataMem)
     wikiDataMem.unpersist()
 
     val wikiSuccinctData = SuccinctRDD(ctx, succinctDataPath, StorageLevel.MEMORY_ONLY).persist()
@@ -385,7 +385,7 @@ object WikiBench {
     // Ensure all partitions are in memory
     println("Number of lines = " + wikiSuccinctData.count())
 
-    wikiSuccinctData.save("/wikiSuccinctData")
+    // wikiSuccinctData.save("/wikiSuccinctData")
 
     // // Benchmark Succinct
     // benchSuccinctRDD(wikiSuccinctData)
