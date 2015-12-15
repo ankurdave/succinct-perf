@@ -19,11 +19,11 @@ import scala.util.matching.Regex
 object WikiBench {
 
   val numRepeats: Int = 1
-  val extractLen: Int = 1024
+  val extractLen: Int = 10240000
 
   // Constants
   val WARMUP_COUNT: Int = 20
-  val MEASURE_COUNT: Int = 1706
+  val MEASURE_COUNT: Int = 10
 
   // Metadata for executing Spark RDD queries
   var partitionOffsets: Seq[Long] = _
@@ -366,7 +366,7 @@ object WikiBench {
     offsetsMeasure = sampleSeq(offsets, MEASURE_COUNT)
 
     // Benchmark DISK_ONLY
-    benchSparkRDD(wikiDataDisk)
+    // benchSparkRDD(wikiDataDisk)
     // wikiDataDisk.unpersist()
 
     val wikiDataMem = ctx.textFile(dataPath, partitions).map(_.getBytes).repartition(partitions).persist(StorageLevel.MEMORY_ONLY)
