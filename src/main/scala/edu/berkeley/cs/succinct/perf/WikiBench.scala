@@ -19,7 +19,7 @@ import scala.util.matching.Regex
 object WikiBench {
 
   val numRepeats: Int = 1
-  val extractLen: Int = 10240000
+  val extractLen: Int = 1024
 
   // Constants
   val WARMUP_COUNT: Int = 20
@@ -221,13 +221,15 @@ object WikiBench {
 
     // Measure
     val outExtract = new FileWriter(outPath + "/spark-" + storageLevel + "-extract")
-    offsetsMeasure.foreach(o => {
-      val startTime = System.currentTimeMillis()
-      val length = extractRDD(rdd, partitionOffsets, partitionSizes, o, extractLen).length
-      val endTime = System.currentTimeMillis()
-      val totTime = endTime - startTime
-      outExtract.write(s"$o\t$length\t$totTime\n")
-    })
+    for (extractLen <- List(1024, 10240, 102400, 1024000, 10240000)) {
+      offsetsMeasure.foreach(o => {
+        val startTime = System.currentTimeMillis()
+        val length = extractRDD(rdd, partitionOffsets, partitionSizes, o, extractLen).length
+        val endTime = System.currentTimeMillis()
+        val totTime = endTime - startTime
+        outExtract.write(s"$o\t$length\t$totTime\n")
+      })
+    }
     outExtract.close()
   }
 
@@ -369,7 +371,7 @@ object WikiBench {
     // benchSparkRDD(wikiDataDisk)
     // wikiDataDisk.unpersist()
 
-    val wikiDataMem = ctx.textFile(dataPath, partitions).map(_.getBytes).repartition(partitions).persist(StorageLevel.MEMORY_ONLY)
+    val wikiDataMem = ctx.textFile(dataPath, partitions).map(_.getBytes).repartition(partitions).persist(StorageLevel.MEMORY_ONLY_SER)
 
     // Ensure all partitions are in memory
     println("Number of lines = " + wikiDataMem.count())
